@@ -23,9 +23,9 @@ void svg_rect(double x, double y, double width, double height, string stroke = "
          << "' stroke='" << stroke << "' fill='" << fill << "' />\n";
 }
 
-void show_histogram_svg(const vector<size_t>& bins) {
+void show_histogram_svg(const vector<size_t>& bins, double column_height) {
     const auto IMAGE_WIDTH = 400;
-    const auto IMAGE_HEIGHT = 300;
+    const auto IMAGE_HEIGHT = 700; // 300;
     const auto TEXT_LEFT = 20;
     const auto TEXT_BASELINE = 20;
     const auto TEXT_WIDTH = 50;
@@ -46,12 +46,16 @@ void show_histogram_svg(const vector<size_t>& bins) {
        scaling_factor = ((double)IMAGE_WIDTH-TEXT_WIDTH)/(max_count * BLOCK_WIDTH);
     };
 
+    if ((bins.size() * column_height) > IMAGE_HEIGHT) {
+        column_height = (double)IMAGE_HEIGHT/bins.size();
+    }
+
     double top = 0;
     for (size_t bin : bins) {
      const double bin_width = BLOCK_WIDTH * bin;
      svg_text(TEXT_LEFT, top + TEXT_BASELINE, to_string(bin));
-     svg_rect(TEXT_WIDTH, top, bin_width*scaling_factor, BIN_HEIGHT, "red", "blue");
-     top += BIN_HEIGHT;
+     svg_rect(TEXT_WIDTH, top, bin_width*scaling_factor, column_height, "red", "blue");
+     top += column_height;
     }
 
     svg_end();
